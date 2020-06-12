@@ -8,7 +8,7 @@ class Commande():
         self.listingPort=False
 
     def start(self):
-        proc = subprocess.Popen(self.cmd, stdout=subprocess.PIPE)
+        proc = subprocess.Popen(self.cmd, stdout=subprocess.PIPE, shell=True)
         for line in proc.stdout.readlines():
             self.parse(str(line.decode()))
 
@@ -21,7 +21,7 @@ class Commande():
 
     def startDb(self):
         self.ip, self.date = self.db.getSession()
-        self.id = self.db.execu("INSERT INTO nmapData(ip, date) VALUES ('"+self.ip+"', '"+str(self.date)+"')", insertId=True)
+        self.id = self.db.execu("INSERT INTO nmapdata(ip, date) VALUES ('"+self.ip+"', '"+str(self.date)+"')", insertId=True)
 
 
 class CommandeRapide(Commande):
