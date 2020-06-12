@@ -80,7 +80,7 @@ class CommandeComplete(Commande):
         if self.listingPort:# if were listing ports, we check if its still listing them, in wich case we add tehm
             if "/" in line.split(" ")[0]:
                 if "open" in line:
-                    self.data["ports"]+=line.split(" ")[0]+";"
+                    self.data["ports"]+=line.split(" ")[0].split("/")[0]+";"
             else:
                 self.listingPort = False
         if line.startswith("PORT"):
