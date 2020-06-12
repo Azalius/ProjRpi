@@ -5,7 +5,7 @@ class Db():
         self.db = mysql.connect(host="localhost", user="root", passwd="", database="rpi")
         if not self.db.is_connected():print("pas connecté")
 
-    def exec(self, commande, insertId=False):
+    def execu(self, commande, insertId=False):
         """Execute une commande"""
         cursor = self.db.cursor()
         cursor.execute(commande)

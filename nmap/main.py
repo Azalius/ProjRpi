@@ -1,3 +1,5 @@
+#!python3
+
 from Commande import CommandeRapide, CommandeComplete
 from Db import Db
 import socket
