@@ -1,10 +1,12 @@
+# -*- coding: utf-8 -*-
+
 import subprocess
+import time
 
 class Commande():
     def __init__(self, db):
         self.db = db
         self.resetData()
-        self.startDb()
         self.listingPort=False
 
     def start(self):
@@ -20,8 +22,8 @@ class Commande():
             self.data[k] = str(self.data[k]).replace("'", "").strip(";")
 
     def startDb(self):
-        self.ip, self.date = self.db.getSession()
-        self.id = self.db.execu("INSERT INTO nmapdata(ip, date) VALUES ('"+self.ip+"', '"+str(self.date)+"')", insertId=True)
+        date=time.strftime('%Y-%m-%d %H:%M:%S')
+        self.id = self.db.execu("INSERT INTO nmapdata(ip, date) VALUES ('"+self.ip+"', '"+str(date)+"')", insertId=True)
 
 
 class CommandeRapide(Commande):
@@ -29,6 +31,7 @@ class CommandeRapide(Commande):
         Commande.__init__(self, db)
         if ip:
             self.ip = ip
+        self.startDb()
         self.cmd = cmd.replace("%ip%", self.ip)
 
     def parse(self, line):
@@ -55,8 +58,8 @@ class CommandeRapide(Commande):
     def insertData(self):
         self.sanitizeData()
         if self.data["ip"] == "": return
-        stri="INSERT INTO ip(data, nomMac, nom, mac, ip)" \
-             " VALUES ("+str(self.id)+", '"+self.data["nomMac"]+"', '"+self.data["nom"]+"', '"+self.data["mac"]+"', '"+self.data["ip"]+"')"
+        stri="INSERT INTO ip(data, nomMac, nom, mac, ip, os_sure, type, ports, os)" \
+             " VALUES ("+str(self.id)+", '"+self.data["nomMac"]+"', '"+self.data["nom"]+"', '"+self.data["mac"]+"', '"+self.data["ip"]+"',1000, '', '', '')"
         print(stri)
         self.db.execu(stri)
 
@@ -66,11 +69,13 @@ class CommandeComplete(Commande):
         if ip:
             self.ip = ip
         self.cmd = cmd.replace("%ip%", self.ip)
+        self.id=self.db.getSession()[2]
+        print(self.id)
 
     def insertData(self): # the insertion add to the current datas based on the ip
         self.sanitizeData()
         if self.data["ip"] == "": return
-        stri="UPDATE ip SET ports='"+self.data["ports"]+"', nom='"+self.data["nom"]+"', os='"+self.data["os"]+"', os_sure="+self.data["os_sure"]+", type='"+self.data["type"]+"' WHERE ip = '"+self.data["ip"]+"' AND DATA = "+str(self.id-1)
+        stri="UPDATE ip SET ports='"+self.data["ports"]+"', nom='"+self.data["nom"]+"', os='"+self.data["os"]+"', os_sure="+self.data["os_sure"]+", type='"+self.data["type"]+"' WHERE ip = '"+self.data["ip"]+"' AND DATA = "+str(self.id)
         print(stri)
         self.db.execu(stri)
 

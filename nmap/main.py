@@ -1,4 +1,5 @@
 #!python3
+# -*- coding: utf-8 -*-
 
 from Commande import CommandeRapide, CommandeComplete
 from Db import Db
